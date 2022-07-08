@@ -28,7 +28,7 @@ jobs:
         run: echo "::set-output version=$(npm info git-branch-history --json | jq ."dist-tags".latest -r)"
 
       - name: Create .npmrc
-        run: echo "registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - name: Publish
         if: ${{ steps.package.version != steps.npm.version }}

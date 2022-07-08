@@ -19,5 +19,8 @@ jobs:
       - name: Set version number
         run: npm pkg set version=0.0.0-rc.$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
 
+      - name: Create .npmrc
+        run: echo "registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
       - name: Publish
         run: npm publish --tag=dev

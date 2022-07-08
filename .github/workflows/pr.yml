@@ -1,0 +1,23 @@
+name: PR
+
+on: pull_request
+
+jobs:
+  release:
+    name: "🧪 Publish RC version"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup node env
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 16
+
+      - name: Set version number
+        run: npm pkg set version=0.0.0-rc.$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
+
+      - name: Publish
+        run: npm publish --tag=dev

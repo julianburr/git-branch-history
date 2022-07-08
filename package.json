@@ -1,6 +1,6 @@
 {
   "name": "git-branch-history",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Simple cli helper, listing recent git branches",
   "main": "index.js",
   "bin": {

@@ -1,0 +1,40 @@
+name: Main
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: "🚀 Publish"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup node env
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 16
+
+      - name: Get package version
+        id: package
+        run: echo "::set-output version=$(cat package.json | jq .version -r)"
+
+      - name: Get npm version
+        id: npm
+        run: echo "::set-output version=$(npm info git-branch-history --json | jq ."dist-tags".latest -r)"
+
+      - name: Create .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
+      - name: Publish
+        if: ${{ steps.package.version != steps.npm.version }}
+        run: npm publish --tag=latest
+
+      - name: Create git version tag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: "v${{ steps.package.version }}"

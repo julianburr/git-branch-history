@@ -25,16 +25,17 @@ jobs:
 
       - name: Get npm version
         id: npm
-        run: echo "::set-output version=$(npm info git-branch-history --json | jq ."dist-tags".latest -r)"
+        run: echo "::set-output version=$(npm info git-branch-history --json | jq .version -r)"
 
       - name: Create .npmrc
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - name: Publish
-        if: ${{ steps.package.version != steps.npm.version }}
+        if: steps.package.outputs.version != steps.npm.outputs.version
         run: npm publish --tag=latest
 
       - name: Create git version tag
+        if: steps.package.outputs.version != steps.npm.outputs.version
         uses: rickstaa/action-create-tag@v1
         with:
-          tag: "v${{ steps.package.version }}"
+          tag: "v${{ steps.package.outputs.version }}"
